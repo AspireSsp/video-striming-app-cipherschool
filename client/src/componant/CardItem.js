@@ -1,4 +1,4 @@
-import { Image } from '@chakra-ui/react'
+import { Flex, Image } from '@chakra-ui/react'
 import {
   Box,
   Center,
@@ -9,11 +9,13 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 
-export default function BlogPostWithImage() {
+export default function BlogPostWithImage(props) {
+  // console.log("propppp", props.video)
   return (
     <Center py={6} m="2">
       <Box
         maxW={'289px'}
+        h={'350px'}
         w={'full'}
         bg={useColorModeValue('white', 'gray.900')}
         boxShadow={'2xl'}
@@ -29,7 +31,7 @@ export default function BlogPostWithImage() {
           pos={'relative'}>
           <Image
             src={
-              'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
+              props?.video?.thombnail ? props?.video?.thombnail :""
             }
             layout={'fill'}
           />
@@ -37,13 +39,16 @@ export default function BlogPostWithImage() {
         
         <Stack mt={6} direction={'row'} spacing={4} align={'center'}>
           <Avatar
-            src={'https://avatars0.githubusercontent.com/u/1164541?v=4'}
+            src={props?.video?.userPic ? props?.video?.userPic : 'https://avatars0.githubusercontent.com/u/1164541?v=4'}
             alt={'Author'}
           />
           <Stack direction={'column'} spacing={0} fontSize={'sm'}>
-            <Text fontWeight={600}>It introduces scaling issues, which you can manage with</Text>
-            <Text color={'gray.500'}>sanjay singh</Text>
-            <Text color={'gray.500'}>Feb 08, 2021 · 500 views</Text>
+            <Text fontWeight={600}>{props?.video?.title ? props?.video?.title : "no title"}</Text>
+            <Text color={'gray.500'}>{props?.video?.userName ? props?.video?.userName : "user"}</Text>
+            <Flex>
+            <Text color={'gray.500'} w={'60%'}>{props?.video?.time ? new Date(props?.video?.time).toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'}).replace(/ /g, ' '): ""}</Text>
+            <Text color={'gray.500'} w={'40%'}>{props?.video?.views ? props?.video?.views : "0" }{" "} views</Text>
+            </Flex>
           </Stack>
         </Stack>
       </Box>

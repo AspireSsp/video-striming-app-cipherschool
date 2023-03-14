@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import {
     Box,
     Flex,
@@ -13,7 +13,7 @@ import {
     MenuDivider,
     useDisclosure,
     useColorModeValue,
-    Stack, Input,
+    Stack, Input, Text,
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon, AddIcon } from '@chakra-ui/icons';
 import { Link } from "react-router-dom";
@@ -35,10 +35,15 @@ const NavLink = ({ children }: { children: ReactNode }) => (
 
 export default function WithAction() {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const [user, setUser] = useState({});
+    
+    useEffect(() => {
+        setUser(JSON.parse(localStorage.getItem('userData')))
+    }, []);
 
     return (
         <>
-            <Box bg={useColorModeValue('white', 'gray.900')} px={4}>
+            <Box bg={useColorModeValue('white', 'gray.900')} px={4} borderBottom={'0.5px solid #E2E8F0'}>
                 <Flex h={16}  alignItems={'center'} justifyContent={'space-between'}>
                     <IconButton
                         size={'md'}
@@ -57,8 +62,19 @@ export default function WithAction() {
                             <Input placeholder='Search...' />
                         </HStack>
                     </HStack>
-                    
-                    {/* <Flex alignItems={'center'} me='5%'>
+                    {
+                        user ? 
+                    <Flex alignItems={'center'} me='5%'>
+                        <Link to={'/'}>
+                        <Button
+                            variant={'solid'}
+                            colorScheme={'teal'}
+                            size={'sm'}
+                            mr={4}
+                            >
+                            Home
+                        </Button>
+                        </Link>
                         <Button
                             variant={'solid'}
                             colorScheme={'teal'}
@@ -74,12 +90,15 @@ export default function WithAction() {
                                 variant={'link'}
                                 cursor={'pointer'}
                                 minW={0}>
+                                <Flex>
+                                <Text me={'3%'} mt={'3%'} >
+                                    {user.name}
+                                </Text>
                                 <Avatar
                                     size={'sm'}
-                                    src={
-                                        'https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
-                                    }
+                                    src={user.pic}
                                 />
+                                </Flex>
                             </MenuButton>
                             <MenuList>
                                 <MenuItem>Link 1</MenuItem>
@@ -88,7 +107,8 @@ export default function WithAction() {
                                 <MenuItem>Link 3</MenuItem>
                             </MenuList>
                         </Menu>
-                    </Flex> */}
+                    </Flex>
+                    :
                     <ButtonGroup gap='2'>
                         <Link to='/signup'>
                         <Button colorScheme='teal'>Sign Up</Button>
@@ -96,9 +116,8 @@ export default function WithAction() {
                         <Link to='/login'>
                         <Button colorScheme='teal'>Log in</Button>
                         </Link>
-
-                            
                     </ButtonGroup>
+                    }
                 </Flex>
 
                 {isOpen ? (

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState, useEffect } from 'react';
 import {
     IconButton,
     Box,
@@ -28,6 +28,7 @@ import { ReactText } from 'react';
 import CardItem from './CardItem'
 import MyNavItem from './Navigation'
 import { Link } from "react-router-dom";
+import axios from 'axios'
 
 interface LinkItemProps {
     name: string;
@@ -42,7 +43,22 @@ const LinkItems: Array<LinkItemProps> = [
 ];
 
 export default function SimpleSidebar({ children }: { children: ReactNode }) {
+
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const [user, setUser] = useState({});
+    const [videoList, setVideoList] = useState([]);
+
+    useEffect(() => {
+        setUser(JSON.parse(localStorage.getItem('userData')))
+        getAllVideos();
+    }, []);
+
+    const getAllVideos = async()=>{
+        const data = await axios.get('https://cipherschool-backend-7j25.onrender.com/api/v1/allvideos')
+        // console.log(data)
+        setVideoList(data.data)
+    }
+
     return (
         <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
             <SidebarContent
@@ -63,63 +79,23 @@ export default function SimpleSidebar({ children }: { children: ReactNode }) {
             </Drawer>
             {/* mobilenav */}
             <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
-            <Box ml={{ base: 0, md: 60 }} p="4" background={"#E2E8F0"}>
+            <Box ml={{ base: 0, md: 60 }} p="4" background={"white"}>
                 <Box h={'60px'} w="85%" bg={useColorModeValue('white', 'gray.900')} position="fixed" top={'0px'} zIndex={1} ms="-20px" >
                     <MyNavItem />
 
                 </Box>
                 <Wrap mt={'2%'}>
-                    <WrapItem>
-                    <Link to='/video/player'>
-                        <CardItem />
-                    </Link>
-                    
-                    </WrapItem>
-                    <WrapItem>
-                        <CardItem />
-                    </WrapItem>
-                    <WrapItem>
-                        <CardItem />
-                    </WrapItem>
-                    <WrapItem>
-                        <CardItem />
-                    </WrapItem>
-                    <WrapItem>
-                        <CardItem />
-                    </WrapItem>
-                    <WrapItem>
-                        <CardItem />
-                    </WrapItem>
-                    <WrapItem>
-                        <CardItem />
-                    </WrapItem>
-                    <WrapItem>
-                        <CardItem />
-                    </WrapItem>
-                    <WrapItem>
-                        <CardItem />
-                    </WrapItem>
-                    <WrapItem>
-                        <CardItem />
-                    </WrapItem>
-                    <WrapItem>
-                        <CardItem />
-                    </WrapItem>
-                    <WrapItem>
-                        <CardItem />
-                    </WrapItem>
-                    <WrapItem>
-                        <CardItem />
-                    </WrapItem>
-                    <WrapItem>
-                        <CardItem />
-                    </WrapItem>
-                    <WrapItem>
-                        <CardItem />
-                    </WrapItem>
-                    <WrapItem>
-                        <CardItem />
-                    </WrapItem>
+                    {
+                        videoList? 
+                        videoList.map((item)=>(
+                        <WrapItem>
+                            <Link to= {`/video/player/${item._id}`}>
+                                <CardItem video={item} />
+                            </Link>
+                        </WrapItem>
+
+                        )) : ""
+                    }
                 </Wrap>
             </Box>
         </Box>
